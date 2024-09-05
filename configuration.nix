@@ -59,7 +59,7 @@ hardware.opengl = {
 	enable = true;
 };
 
-services.xserver.videoDrivers = ["nvidia"];
+services.xserver.videoDrivers = ["nvidia" "amdgpu"];
 
 hardware.nvidia = {
 	modesetting.enable = true;
@@ -69,6 +69,16 @@ hardware.nvidia = {
 	nvidiaSettings = true;
 	# package = config.boot.kernelPackages.nvidiaPackages.vulkan_beta;
 };
+
+# For ROCm
+# systemd.tmpfiles.rules = [
+#     "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.rocmPackages.clr}"
+#   ];
+  
+hardware.opengl.extraPackages = with pkgs; [
+  rocmPackages.clr.icd
+  amdvlk
+];
 
   # Enable the KDE Plasma Desktop Environment.
 #  services.displayManager.sddm.enable = true;
@@ -114,7 +124,8 @@ hardware.nvidia = {
       kdePackages.kate
     #  thunderbird
     ouch
-    htop
+    htop # CPU
+    nvtopPackages.full # GPU
     telegram-desktop
     ];
   };
